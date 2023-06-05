@@ -64,13 +64,14 @@ public class ClientController {
     public CompletionStage<String> onClientSide(@PathParam("parameter") String parameter) { 
         
         Span span = tracer.spanBuilder("my-span").startSpan();
+        CompletionStage<String> result;
         try (Scope scope = span.makeCurrent()) {
-            CompletionStage<String> result =  CompletableFuture.completedStage("Hello " + conf + "! " + service.doSomething(parameter));
+             result =  CompletableFuture.completedStage("Hello " + conf + "! " + service.doSomething(parameter));
             span.addEvent("monday-event");
+        } finally {
             span.end();
+        }
             return result;
-        } 
-     
      }
 
     public CompletionStage<String> myfallback(@PathParam("parameter") String parameter) {   
